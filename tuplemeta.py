@@ -7,28 +7,28 @@ from operator import itemgetter
 class TupleMeta(type):
     def __init__(cls, clsname, bases, clsdict, **kwargs):
         super().__init__(clsname, bases, clsdict, **kwargs)
-        # fields = clsdict.get("fields", [])
+        # _fields = clsdict.get("_fields", [])
         try:
-            fields = cls.fields
+            _fields = cls._fields
         except AttributeError:
-            fields = []
-        for i, field in enumerate(fields):
+            _fields = []
+        for i, field in enumerate(_fields):
             setattr(cls, field, property(itemgetter(i)))
 
 
 class Tuple(tuple, metaclass=TupleMeta):
     def __new__(cls, *args, **kwargs):
-        if len(args) != len(cls.fields):
-            raise TypeError(f"Must supply {len(cls.fields)} args")
+        if len(args) != len(cls._fields):
+            raise TypeError(f"Must supply {len(cls._fields)} args")
         return super().__new__(cls, args)
 
 
 class Point(Tuple):
-    fields = ["x", "y"]
+    _fields = ["x", "y"]
 
 
 class Exercise(Tuple):
-    fields = ["exercise_name", "weight", "reps"]
+    _fields = ["exercise_name", "weight", "reps"]
 
 
 if __name__ == "__main__":
