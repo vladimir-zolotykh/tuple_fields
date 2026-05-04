@@ -6,7 +6,12 @@ from operator import itemgetter
 
 class TupleMeta(type):
     def __init__(cls, clsname, bases, clsdict, **kwargs):
-        fields = clsdict.get("fields", [])
+        super().__init__(clsname, bases, clsdict, **kwargs)
+        # fields = clsdict.get("fields", [])
+        try:
+            fields = cls.fields
+        except AttributeError:
+            fields = []
         for i, field in enumerate(fields):
             setattr(cls, field, property(itemgetter(i)))
 
